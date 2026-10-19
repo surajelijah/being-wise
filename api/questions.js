@@ -29,14 +29,17 @@ export default async function handler(req, res) {
     if (name.length > 60) return res.status(400).json({ error: "Name must be 60 characters or fewer." });
     if (await rateLimited(req, "ask", 5, 600)) return res.status(429).json({ error: "Too many questions. Please wait a few minutes." });
 
+    // The asker's own vote counts as the first vote.
+    const voterId = /^[0-9a-f-]{36}$/i.test(body.voterId || "") ? body.voterId : null;
     const id = randomUUID();
     const created_at = new Date().toISOString();
-    await redis.multi()
+    const tx = redis.multi()
       .hset(`q:${id}`, { text, name, created_at })
       .zadd("questions:new", { score: Date.now(), member: id })
-      .zadd("questions:votes", { score: 0, member: id })
-      .exec();
-    return res.status(201).json({ id });
+      .zadd("questions:votes", { score: 1, member: id });
+    if (voterId) tx.sadd(`voters:${id}`, voterId);
+    await tx.exec();
+    return res.status(201).json({ id, votes: 1 });
   }
 
   res.setHeader("Allow", "GET, POST");

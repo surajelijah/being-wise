@@ -27,7 +27,7 @@
         return r.json();
       });
     },
-    add: function (text, name) { return post("/api/questions", { text: text, name: name }); },
+    add: function (text, name) { return post("/api/questions", { text: text, name: name, voterId: voterId }); },
     vote: function (id) { return post("/api/vote", { id: id, voterId: voterId }); }
   };
   function post(url, body) {
@@ -113,6 +113,8 @@
     api.add(t, n).then(function (res) {
       form.reset(); $("q-count").textContent = "0";
       highlightId = res && res.id;
+      // The asker's self-vote was recorded by the server.
+      if (highlightId) { voted.add(highlightId); store.set("bw.voted", Array.from(voted)); }
       sort = "new"; syncSort();
       return load().then(function () {
         showTab("list");
