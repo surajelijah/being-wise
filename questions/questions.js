@@ -1,8 +1,6 @@
 (function () {
   "use strict";
 
-  var cfg = window.BW_CONFIG || {};
-  var LIVE = Boolean(cfg.supabaseUrl && cfg.supabaseAnonKey);
   var REFRESH_MS = 15000;
 
   var store = {
@@ -22,37 +20,29 @@
   var voted = new Set(store.get("bw.voted", []));
 
   // ---- Data layer -------------------------------------------------------
-  var api = LIVE ? supabaseApi() : localApi();
-
-  function supabaseApi() {
-    var base = cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/";
-    var headers = {
-      apikey: cfg.supabaseAnonKey,
-      Authorization: "Bearer " + cfg.supabaseAnonKey,
-      "Content-Type": "application/json"
-    };
-    function req(path, opts) {
-      return fetch(base + path, Object.assign({ headers: headers }, opts)).then(function (r) {
-        if (!r.ok && r.status !== 409) throw new Error("Request failed (" + r.status + ")");
-        return r.status === 204 || r.status === 201 || r.status === 409 ? null : r.json();
+  // Uses the site's /api endpoints; falls back to browser-only preview mode
+  // when the database isn't connected (503) or the API isn't reachable.
+  var LIVE = true;
+  var serverApi = {
+    list: function () {
+      return fetch("/api/questions", { cache: "no-store" }).then(function (r) {
+        if (!r.ok) throw Object.assign(new Error("list failed"), { status: r.status });
+        return r.json();
       });
-    }
-    return {
-      list: function () {
-        return req("questions?select=id,text,name,created_at,votes(count)&order=created_at.desc").then(function (rows) {
-          return rows.map(function (q) {
-            return { id: q.id, text: q.text, name: q.name, created_at: q.created_at, votes: (q.votes && q.votes[0] && q.votes[0].count) || 0 };
-          });
+    },
+    add: function (text, name) { return post("/api/questions", { text: text, name: name }); },
+    vote: function (id) { return post("/api/vote", { id: id, voterId: voterId }); }
+  };
+  function post(url, body) {
+    return fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (data) {
+          if (!r.ok) throw Object.assign(new Error(data.error || "Request failed"), { status: r.status, userMessage: data.error });
+          return data;
         });
-      },
-      add: function (text, name) {
-        return req("questions", { method: "POST", headers: Object.assign({ Prefer: "return=minimal" }, headers), body: JSON.stringify({ text: text, name: name || null }) });
-      },
-      vote: function (id) {
-        return req("votes", { method: "POST", headers: Object.assign({ Prefer: "return=minimal" }, headers), body: JSON.stringify({ question_id: id, voter_id: voterId }) });
-      }
-    };
+      });
   }
+  var api = serverApi;
 
   function localApi() {
     function all() { return store.get("bw.demo.questions", []); }
@@ -77,8 +67,6 @@
   var $ = function (id) { return document.getElementById(id); };
   var list = $("q-list"), form = $("ask-form"), text = $("q-text"), nameEl = $("q-name"), msg = $("form-msg"), btn = $("ask-btn");
   var questions = [], sort = "top";
-
-  if (!LIVE) $("demo-banner").hidden = false;
 
   var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 
@@ -120,7 +108,13 @@
 
   function load() {
     return api.list().then(function (rows) { questions = rows; render(); })
-      .catch(function () { msg.textContent = "Could not load questions. Please refresh in a moment."; });
+      .catch(function (err) {
+        if (api === serverApi && (err.status === 503 || err.status === 404 || !err.status)) {
+          LIVE = false; api = localApi(); $("demo-banner").hidden = false;
+          return load();
+        }
+        msg.textContent = "Could not load questions. Please refresh in a moment.";
+      });
   }
 
   text.addEventListener("input", function () { $("q-count").textContent = text.value.length; });
@@ -135,8 +129,8 @@
       msg.textContent = "Thank you — your question has been received.";
       sort = "new"; syncSort();
       return load();
-    }).catch(function () {
-      msg.textContent = "Something went wrong. Please try again.";
+    }).catch(function (err) {
+      msg.textContent = err.userMessage || "Something went wrong. Please try again.";
     }).then(function () { btn.disabled = false; });
   });
 
@@ -166,5 +160,5 @@
   });
 
   load();
-  if (LIVE) setInterval(function () { if (!document.hidden) load(); }, REFRESH_MS);
+  setInterval(function () { if (LIVE && !document.hidden) load(); }, REFRESH_MS);
 })();
