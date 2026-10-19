@@ -4,39 +4,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Being WISE</title>
-  <meta name="description" content="Being WISE">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="./">Being WISE</a>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
+    <a class="brand" href="./"><svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M32 4C38 14 38 26 32 36C26 26 26 14 32 4Z"/><path d="M32 36C22 30 16 20 14 10C24 14 30 24 32 36Z"/><path d="M32 36C42 30 48 20 50 10C40 14 34 24 32 36Z"/><path d="M32 36C20 36 8 30 2 22C14 20 26 26 32 36Z"/><path d="M32 36C44 36 56 30 62 22C50 20 38 26 32 36Z"/></svg> Being WISE</a>
+    <nav class="site-nav">
+      <a href="./" aria-current="page">Home</a>
+      <a href="content/">Content</a>
+      <a href="questions/">Questions</a>
     </nav>
   </header>
-
-  <main>
+  <main class="wrap">
     <section class="hero">
+      <svg class="lotus" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M32 4C38 14 38 26 32 36C26 26 26 14 32 4Z"/><path d="M32 36C22 30 16 20 14 10C24 14 30 24 32 36Z"/><path d="M32 36C42 30 48 20 50 10C40 14 34 24 32 36Z"/><path d="M32 36C20 36 8 30 2 22C14 20 26 26 32 36Z"/><path d="M32 36C44 36 56 30 62 22C50 20 38 26 32 36Z"/></svg>
       <h1>Being WISE</h1>
-      <p class="tagline">Something wonderful is on its way.</p>
+      <p class="tagline">A quiet space to share wisdom, ask what stirs within, and grow together.</p>
+      <div class="divider">✦</div>
     </section>
-
-    <section id="about" class="section">
-      <h2>About</h2>
-      <p>Content coming soon.</p>
-    </section>
-
-    <section id="contact" class="section">
-      <h2>Contact</h2>
-      <p>Content coming soon.</p>
+    <section class="paths">
+      <a class="card path-card" href="content/">
+        <h2>Content</h2>
+        <p>Reflections, teachings and images shared with the community.</p>
+      </a>
+      <a class="card path-card" href="questions/">
+        <h2>Questions</h2>
+        <p>Ask what is on your heart, and lift up the questions that matter most.</p>
+      </a>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <p>&copy; <span id="year"></span> Being WISE</p>
-  </footer>
-
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <footer class="site-footer">Be still. Be curious. Be WISE.</footer>
 </body>
 </html>

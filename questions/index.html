@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Questions · Being WISE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="questions.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href=".././"><svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M32 4C38 14 38 26 32 36C26 26 26 14 32 4Z"/><path d="M32 36C22 30 16 20 14 10C24 14 30 24 32 36Z"/><path d="M32 36C42 30 48 20 50 10C40 14 34 24 32 36Z"/><path d="M32 36C20 36 8 30 2 22C14 20 26 26 32 36Z"/><path d="M32 36C44 36 56 30 62 22C50 20 38 26 32 36Z"/></svg> Being WISE</a>
+    <nav class="site-nav">
+      <a href=".././">Home</a>
+      <a href="../content/">Content</a>
+      <a href="../questions/" aria-current="page">Questions</a>
+    </nav>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Questions</h1>
+      <p class="tagline">“Live the questions now.” Ask what stirs within you, and lift up the questions that call to you.</p>
+      <div class="divider">✦</div>
+    </section>
+
+    <div id="demo-banner" class="notice" hidden>
+      Preview mode — questions are saved only in this browser until the shared database is connected.
+    </div>
+
+    <section class="card ask">
+      <form id="ask-form" autocomplete="off">
+        <div class="field">
+          <label for="q-text">Your question</label>
+          <textarea id="q-text" maxlength="500" required placeholder="What would you like to explore?"></textarea>
+          <div class="count"><span id="q-count">0</span>/500</div>
+        </div>
+        <div class="row">
+          <div class="field grow">
+            <label for="q-name">Your name <span class="opt">(optional)</span></label>
+            <input id="q-name" type="text" maxlength="60" placeholder="Leave blank to ask anonymously">
+          </div>
+          <button class="btn" type="submit" id="ask-btn">Offer question</button>
+        </div>
+        <p class="form-msg" id="form-msg" role="status"></p>
+      </form>
+    </section>
+
+    <section class="dashboard">
+      <div class="stats">
+        <div class="stat"><span id="stat-questions">0</span><small>Questions</small></div>
+        <div class="stat"><span id="stat-votes">0</span><small>Votes</small></div>
+        <div class="stat"><span id="stat-seekers">0</span><small>Named seekers</small></div>
+      </div>
+
+      <div class="toolbar">
+        <h2>Dashboard</h2>
+        <div class="sort" role="tablist" aria-label="Sort questions">
+          <button type="button" data-sort="top" class="active">Most voted</button>
+          <button type="button" data-sort="new">Newest</button>
+        </div>
+      </div>
+
+      <ol id="q-list" class="q-list" aria-live="polite"></ol>
+      <p id="empty" class="empty" hidden>No questions yet. Be the first to ask.</p>
+    </section>
+  </main>
+  <footer class="site-footer">Be still. Be curious. Be WISE.</footer>
+
+  <script src="../assets/config.js"></script>
+  <script src="questions.js"></script>
+</body>
+</html>

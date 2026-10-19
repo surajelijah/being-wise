@@ -1,0 +1,41 @@
+.notice { text-align: center; font-size: 0.9rem; color: var(--muted); border: 1px dashed var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; }
+.ask { margin-bottom: 40px; }
+.field { margin-bottom: 14px; }
+.count { text-align: right; font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.opt { text-transform: none; letter-spacing: 0; font-style: italic; }
+.row { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
+.row .grow { flex: 1 1 240px; margin-bottom: 0; }
+.form-msg { min-height: 1.4em; margin: 10px 0 0; font-size: 0.9rem; color: var(--gold); }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 30px; }
+.stat { text-align: center; padding: 18px 10px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); }
+.stat span { display: block; font-family: var(--serif); font-size: 2.2rem; color: var(--gold); line-height: 1.1; }
+.stat small { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.72rem; }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.toolbar h2 { margin: 0; font-size: 2rem; }
+.sort { display: flex; gap: 4px; padding: 4px; border-radius: 999px; border: 1px solid var(--border); }
+.sort button { font: inherit; font-size: 0.88rem; background: none; border: none; color: var(--muted); padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.sort button.active { background: var(--gold-soft); color: var(--gold); }
+
+.q-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.q-item { display: flex; gap: 18px; align-items: flex-start; padding: 18px 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); animation: rise .4s ease both; }
+.vote { flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; padding: 8px 6px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font: inherit; transition: all .2s ease; }
+.vote svg { width: 18px; height: 18px; }
+.vote .n { font-family: var(--serif); font-size: 1.4rem; color: var(--text); line-height: 1; }
+.vote:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.vote.voted { background: var(--gold-soft); border-color: var(--gold); color: var(--gold); cursor: default; }
+.vote.voted .n { color: var(--gold); }
+.q-body { flex: 1; min-width: 0; }
+.q-text { margin: 0 0 8px; font-size: 1.05rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.q-meta { font-size: 0.85rem; color: var(--muted); }
+.q-meta .who { font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--gold); }
+.rank { font-family: var(--serif); color: var(--muted); font-size: 0.95rem; margin-right: 6px; }
+.empty { text-align: center; color: var(--muted); font-family: var(--serif); font-style: italic; font-size: 1.2rem; padding: 30px 0; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (max-width: 520px) {
+  .stat span { font-size: 1.7rem; }
+  .q-item { gap: 12px; padding: 14px; }
+  .row .btn { width: 100%; }
+}
