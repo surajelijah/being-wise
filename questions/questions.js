@@ -50,9 +50,10 @@
       list: function () { return Promise.resolve(all()); },
       add: function (text, name) {
         var qs = all();
-        qs.push({ id: uuid(), text: text, name: name || null, created_at: new Date().toISOString(), votes: 0 });
+        var id = uuid();
+        qs.push({ id: id, text: text, name: name || null, created_at: new Date().toISOString(), votes: 0 });
         store.set("bw.demo.questions", qs);
-        return Promise.resolve();
+        return Promise.resolve({ id: id });
       },
       vote: function (id) {
         var qs = all();
@@ -66,7 +67,7 @@
   // ---- UI ---------------------------------------------------------------
   var $ = function (id) { return document.getElementById(id); };
   var list = $("q-list"), form = $("ask-form"), text = $("q-text"), nameEl = $("q-name"), msg = $("form-msg"), btn = $("ask-btn");
-  var questions = [], sort = "top";
+  var questions = [], sort = "top", highlightId = null, toastTimer;
 
   var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 
@@ -92,15 +93,17 @@
     list.innerHTML = sorted.map(function (q, i) {
       var isVoted = voted.has(q.id);
       var who = q.name ? esc(q.name) : "Anonymous";
-      return '<li class="q-item">' +
+      var isNew = q.id === highlightId;
+      return '<li class="q-item' + (isNew ? " highlight" : "") + '" id="q-' + esc(q.id) + '">' +
         '<span class="num">' + String(i + 1).padStart(2, "0") + '</span>' +
         '<div class="q-body"><p class="q-text">' + esc(q.text) + '</p>' +
-        '<div class="q-meta"><span class="who">' + who + '</span> · ' + ago(q.created_at) + '</div></div>' +
+        '<div class="q-meta"><span class="who">' + who + '</span> · ' + ago(q.created_at) + (isNew ? '<span class="new-tag">Your question</span>' : "") + '</div></div>' +
         '<button class="vote' + (isVoted ? " voted" : "") + '" data-id="' + esc(q.id) + '"' + (isVoted ? " disabled" : "") +
         ' aria-label="' + (isVoted ? "You voted for this question" : "Vote for this question") + '">' + ARROW +
         '<span class="n">' + q.votes + '</span><small>' + (q.votes === 1 ? "vote" : "votes") + '</small></button></li>';
     }).join("");
     $("empty").hidden = questions.length > 0;
+    $("tab-count").textContent = questions.length;
     $("stat-questions").textContent = questions.length;
     $("stat-votes").textContent = questions.reduce(function (t, q) { return t + q.votes; }, 0);
     $("stat-seekers").textContent = new Set(questions.filter(function (q) { return q.name; }).map(function (q) { return q.name.trim().toLowerCase(); })).size;
@@ -113,7 +116,7 @@
           LIVE = false; api = localApi(); $("demo-banner").hidden = false;
           return load();
         }
-        msg.textContent = "Could not load questions. Please refresh in a moment.";
+        toast("Could not load questions. Please refresh in a moment.");
       });
   }
 
@@ -124,11 +127,17 @@
     var t = text.value.trim(), n = nameEl.value.trim();
     if (t.length < 3) { msg.textContent = "Please share a little more of your question."; return; }
     btn.disabled = true; msg.textContent = "";
-    api.add(t, n).then(function () {
+    api.add(t, n).then(function (res) {
       form.reset(); $("q-count").textContent = "0";
-      msg.textContent = "Thank you — your question has been received.";
+      highlightId = res && res.id;
       sort = "new"; syncSort();
-      return load();
+      return load().then(function () {
+        showTab("list");
+        toast("Thank you — your question has been received.");
+        var el = highlightId && document.getElementById("q-" + highlightId);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(function () { highlightId = null; var h = document.querySelector(".q-item.highlight"); if (h) h.classList.remove("highlight"); }, 6000);
+      });
     }).catch(function (err) {
       msg.textContent = err.userMessage || "Something went wrong. Please try again.";
     }).then(function () { btn.disabled = false; });
@@ -145,7 +154,7 @@
     render();
     api.vote(id).then(load).catch(function () {
       voted.delete(id); store.set("bw.voted", Array.from(voted));
-      msg.textContent = "Your vote could not be saved. Please try again.";
+      toast("Your vote could not be saved. Please try again.");
       load();
     });
   });
@@ -158,6 +167,38 @@
     if (!b) return;
     sort = b.getAttribute("data-sort"); syncSort(); render();
   });
+
+  // ---- Tabs -------------------------------------------------------------
+  var tabs = { list: $("tab-list"), ask: $("tab-ask") };
+  var panels = { list: $("panel-list"), ask: $("panel-ask") };
+  function showTab(name, focus) {
+    Object.keys(tabs).forEach(function (k) {
+      var on = k === name;
+      tabs[k].setAttribute("aria-selected", on);
+      tabs[k].tabIndex = on ? 0 : -1;
+      panels[k].hidden = !on;
+    });
+    if (focus) tabs[name].focus();
+    if (name === "ask") { msg.textContent = ""; text.focus({ preventScroll: true }); }
+    history.replaceState(null, "", name === "ask" ? "#ask" : location.pathname);
+  }
+  tabs.list.addEventListener("click", function () { showTab("list"); });
+  tabs.ask.addEventListener("click", function () { showTab("ask"); });
+  document.querySelector(".tabs").addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") showTab(tabs.list.getAttribute("aria-selected") === "true" ? "ask" : "list", true);
+  });
+  document.addEventListener("click", function (e) {
+    var g = e.target.closest("[data-goto]");
+    if (g) showTab(g.getAttribute("data-goto"));
+  });
+  if (location.hash === "#ask") showTab("ask");
+
+  function toast(m) {
+    var t = $("toast");
+    t.textContent = m; t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 4000);
+  }
 
   load();
   setInterval(function () { if (LIVE && !document.hidden) load(); }, REFRESH_MS);

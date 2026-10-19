@@ -37,25 +37,22 @@
       Preview mode — questions are saved only in this browser until the shared database is connected.
     </div>
 
-    <section class="section ask">
-      <form id="ask-form" autocomplete="off">
-        <div class="field">
-          <label class="label" for="q-text">Your question</label>
-          <textarea id="q-text" maxlength="500" required placeholder="What would you like us to study or discuss?"></textarea>
-          <div class="count"><span id="q-count">0</span>/500</div>
-        </div>
-        <div class="row">
-          <div class="field grow">
-            <label class="label" for="q-name">Your name <span class="opt">(optional)</span></label>
-            <input id="q-name" type="text" maxlength="60" placeholder="Leave blank to ask anonymously">
-          </div>
-          <button class="btn" type="submit" id="ask-btn">SUBMIT QUESTION</button>
-        </div>
-        <p class="form-msg" id="form-msg" role="status"></p>
-      </form>
-    </section>
+    <div class="tabs" role="tablist" aria-label="Questions">
+      <button type="button" role="tab" id="tab-list" aria-controls="panel-list" aria-selected="true">
+        Questions <span class="badge" id="tab-count">0</span>
+      </button>
+      <button type="button" role="tab" id="tab-ask" aria-controls="panel-ask" aria-selected="false" tabindex="-1">
+        Ask a question
+      </button>
+    </div>
 
-    <section class="section dashboard">
+    <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list">
+      <div class="stats">
+        <div class="stat"><span id="stat-questions">0</span><small>Questions</small></div>
+        <div class="stat"><span id="stat-votes">0</span><small>Votes</small></div>
+        <div class="stat"><span id="stat-seekers">0</span><small>Askers</small></div>
+      </div>
+
       <div class="toolbar">
         <h2>Questions for reflection and discussion</h2>
         <div class="sort" aria-label="Sort questions">
@@ -64,15 +61,35 @@
         </div>
       </div>
 
-      <div class="stats">
-        <div class="stat"><span id="stat-questions">0</span><small>Questions</small></div>
-        <div class="stat"><span id="stat-votes">0</span><small>Votes</small></div>
-        <div class="stat"><span id="stat-seekers">0</span><small>Askers</small></div>
-      </div>
-
       <ol id="q-list" class="q-list" aria-live="polite"></ol>
-      <p id="empty" class="empty" hidden>No questions yet. Be the first to ask.</p>
+      <div id="empty" class="empty" hidden>
+        <p>No questions yet. Be the first to ask.</p>
+        <button type="button" class="btn" data-goto="ask">ASK A QUESTION</button>
+      </div>
     </section>
+
+    <section class="panel" id="panel-ask" role="tabpanel" aria-labelledby="tab-ask" hidden>
+      <form id="ask-form" class="ask-card" autocomplete="off">
+        <h2>Bring your question</h2>
+        <p class="hint">Ask about Scripture, faith or life. The group can vote on the questions they most want to study together.</p>
+        <div class="field">
+          <label class="label" for="q-text">Your question</label>
+          <textarea id="q-text" maxlength="500" required placeholder="What would you like us to study or discuss?"></textarea>
+          <div class="count"><span id="q-count">0</span>/500</div>
+        </div>
+        <div class="field">
+          <label class="label" for="q-name">Your name <span class="opt">(optional)</span></label>
+          <input id="q-name" type="text" maxlength="60" placeholder="Leave blank to ask anonymously">
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit" id="ask-btn">SUBMIT QUESTION</button>
+          <button class="link-btn" type="button" data-goto="list">Back to questions</button>
+        </div>
+        <p class="form-msg" id="form-msg" role="status"></p>
+      </form>
+    </section>
+
+    <p class="toast" id="toast" role="status" hidden></p>
   </main>
   <footer class="site-footer">
     <blockquote>Iron sharpeneth iron; so a man sharpeneth the countenance of his friend.</blockquote>
