@@ -10,16 +10,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Gelasio:wght@400;500&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="questions.css">
+  <link rel="stylesheet" href="celebrate.css">
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href=".././"><span class="b">Being</span><span class="w">WISE</span></a>
-      <nav class="site-nav">
-        <a href=".././">Home</a>
-        <a href="../content/">Content</a>
-        <a href="../questions/" aria-current="page">Questions</a>
-      </nav>
+      <a class="brand" href="./"><span class="b">Being</span><span class="w">WISE</span></a>
+      <span class="header-meet">Every Saturday · 11:30 AM – 12:30 PM</span>
     </div>
   </header>
   <main class="wrap">
@@ -94,8 +91,50 @@
   <footer class="site-footer">
     <blockquote>Iron sharpeneth iron; so a man sharpeneth the countenance of his friend.</blockquote>
     <span class="label">Proverbs 27:17 / KJV</span>
-    <div class="meet">EVERY SATURDAY · 11:30 AM – 12:30 PM</div>
   </footer>
+
+
+  <div class="celebrate" id="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrate-title" hidden>
+    <div class="rays" aria-hidden="true"></div>
+    <div class="sparkles" id="sparkles" aria-hidden="true"></div>
+    <div class="celebrate-inner">
+      <div class="choir">
+        <div class="angel a1"><svg class="angel-svg" viewBox="0 0 120 140" aria-hidden="true">
+            <ellipse class="halo" cx="60" cy="13" rx="14" ry="4"/>
+            <g class="wing wing-l"><path d="M52 52C34 28 10 30 3 56c12-3 24 2 32 12-8-1-15 2-20 8 12-2 22 1 29 8 3-10 6-22 8-32z"/></g>
+            <g class="wing wing-r"><path d="M68 52c18-24 42-22 49 4-12-3-24 2-32 12 8-1 15 2 20 8-12-2-22 1-29 8-3-10-6-22-8-32z"/></g>
+            <g class="arm arm-l"><path d="M51 58C44 48 41 38 43 28"/></g>
+            <g class="arm arm-r"><path d="M69 58c7-10 10-20 8-30"/></g>
+            <circle class="body" cx="60" cy="32" r="10"/>
+            <path class="body" d="M60 44c-9 0-13 7-15 18l-11 66c17 7 35 7 52 0L75 62c-2-11-6-18-15-18z"/>
+          </svg></div>
+        <div class="angel a2"><svg class="angel-svg" viewBox="0 0 120 140" aria-hidden="true">
+            <ellipse class="halo" cx="60" cy="13" rx="14" ry="4"/>
+            <g class="wing wing-l"><path d="M52 52C34 28 10 30 3 56c12-3 24 2 32 12-8-1-15 2-20 8 12-2 22 1 29 8 3-10 6-22 8-32z"/></g>
+            <g class="wing wing-r"><path d="M68 52c18-24 42-22 49 4-12-3-24 2-32 12 8-1 15 2 20 8-12-2-22 1-29 8-3-10-6-22-8-32z"/></g>
+            <g class="arm arm-l"><path d="M51 58C44 48 41 38 43 28"/></g>
+            <g class="arm arm-r"><path d="M69 58c7-10 10-20 8-30"/></g>
+            <circle class="body" cx="60" cy="32" r="10"/>
+            <path class="body" d="M60 44c-9 0-13 7-15 18l-11 66c17 7 35 7 52 0L75 62c-2-11-6-18-15-18z"/>
+          </svg></div>
+        <div class="angel a3"><svg class="angel-svg" viewBox="0 0 120 140" aria-hidden="true">
+            <ellipse class="halo" cx="60" cy="13" rx="14" ry="4"/>
+            <g class="wing wing-l"><path d="M52 52C34 28 10 30 3 56c12-3 24 2 32 12-8-1-15 2-20 8 12-2 22 1 29 8 3-10 6-22 8-32z"/></g>
+            <g class="wing wing-r"><path d="M68 52c18-24 42-22 49 4-12-3-24 2-32 12 8-1 15 2 20 8-12-2-22 1-29 8-3-10-6-22-8-32z"/></g>
+            <g class="arm arm-l"><path d="M51 58C44 48 41 38 43 28"/></g>
+            <g class="arm arm-r"><path d="M69 58c7-10 10-20 8-30"/></g>
+            <circle class="body" cx="60" cy="32" r="10"/>
+            <path class="body" d="M60 44c-9 0-13 7-15 18l-11 66c17 7 35 7 52 0L75 62c-2-11-6-18-15-18z"/>
+          </svg></div>
+      </div>
+      <h2 id="celebrate-title">Thanks for being curious</h2>
+      <div class="celebrate-verse">
+        <span class="label">Proverbs 2:6 / KJV</span>
+        <p>For the LORD giveth wisdom: out of his mouth cometh knowledge and understanding.</p>
+      </div>
+      <button type="button" class="btn" id="celebrate-close">SEE YOUR QUESTION</button>
+    </div>
+  </div>
 
   <script src="questions.js"></script>
 </body>

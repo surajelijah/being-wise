@@ -133,10 +133,11 @@
       sort = "new"; syncSort();
       return load().then(function () {
         showTab("list");
-        toast("Thank you — your question has been received.");
-        var el = highlightId && document.getElementById("q-" + highlightId);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(function () { highlightId = null; var h = document.querySelector(".q-item.highlight"); if (h) h.classList.remove("highlight"); }, 6000);
+        celebrate(function () {
+          var el = highlightId && document.getElementById("q-" + highlightId);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+          setTimeout(function () { highlightId = null; var h = document.querySelector(".q-item.highlight"); if (h) h.classList.remove("highlight"); }, 6000);
+        });
       });
     }).catch(function (err) {
       msg.textContent = err.userMessage || "Something went wrong. Please try again.";
@@ -192,6 +193,38 @@
     if (g) showTab(g.getAttribute("data-goto"));
   });
   if (location.hash === "#ask") showTab("ask");
+
+  // ---- Celebration ------------------------------------------------------
+  function celebrate(onClose) {
+    var c = $("celebrate"), sp = $("sparkles"), close = $("celebrate-close"), prev = document.activeElement;
+    sp.innerHTML = "";
+    for (var i = 0; i < 46; i++) {
+      var d = document.createElement("span");
+      if (i % 3 === 0) d.className = "star";
+      d.style.left = (Math.random() * 100) + "%";
+      d.style.animationDuration = (4 + Math.random() * 5) + "s";
+      d.style.animationDelay = (-Math.random() * 8) + "s";
+      sp.appendChild(d);
+    }
+    c.classList.remove("closing");
+    c.hidden = false;
+    document.body.style.overflow = "hidden";
+    setTimeout(function () { close.focus(); }, 50);
+
+    function done() {
+      c.removeEventListener("keydown", onKey);
+      close.removeEventListener("click", done);
+      c.classList.add("closing");
+      setTimeout(function () {
+        c.hidden = true; sp.innerHTML = ""; document.body.style.overflow = "";
+        if (prev && prev.focus) prev.focus({ preventScroll: true });
+        onClose && onClose();
+      }, 380);
+    }
+    function onKey(e) { if (e.key === "Escape" || e.key === "Tab") { e.preventDefault(); if (e.key === "Escape") done(); } }
+    close.addEventListener("click", done);
+    c.addEventListener("keydown", onKey);
+  }
 
   function toast(m) {
     var t = $("toast");

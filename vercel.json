@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/questions/", "permanent": false },
+    { "source": "/content", "destination": "/questions/", "permanent": false },
+    { "source": "/content/:path*", "destination": "/questions/", "permanent": false },
+    { "source": "/index.html", "destination": "/questions/", "permanent": false }
+  ]
+}

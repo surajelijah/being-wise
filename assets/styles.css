@@ -171,3 +171,4 @@ textarea { resize: vertical; min-height: 100px; }
   .numbered li { grid-template-columns: 38px 1fr; }
   .when { gap: 10px; flex-wrap: wrap; justify-content: center; }
 }
+.header-meet { font-family: var(--display); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: #c9bfae; }
