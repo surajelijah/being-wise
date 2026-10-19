@@ -20,10 +20,7 @@
   var voted = new Set(store.get("bw.voted", []));
 
   // ---- Data layer -------------------------------------------------------
-  // Uses the site's /api endpoints; falls back to browser-only preview mode
-  // when the database isn't connected (503) or the API isn't reachable.
-  var LIVE = true;
-  var serverApi = {
+  var api = {
     list: function () {
       return fetch("/api/questions", { cache: "no-store" }).then(function (r) {
         if (!r.ok) throw Object.assign(new Error("list failed"), { status: r.status });
@@ -42,32 +39,12 @@
         });
       });
   }
-  var api = serverApi;
-
-  function localApi() {
-    function all() { return store.get("bw.demo.questions", []); }
-    return {
-      list: function () { return Promise.resolve(all()); },
-      add: function (text, name) {
-        var qs = all();
-        var id = uuid();
-        qs.push({ id: id, text: text, name: name || null, created_at: new Date().toISOString(), votes: 0 });
-        store.set("bw.demo.questions", qs);
-        return Promise.resolve({ id: id });
-      },
-      vote: function (id) {
-        var qs = all();
-        qs.forEach(function (q) { if (q.id === id) q.votes += 1; });
-        store.set("bw.demo.questions", qs);
-        return Promise.resolve();
-      }
-    };
-  }
 
   // ---- UI ---------------------------------------------------------------
   var $ = function (id) { return document.getElementById(id); };
   var list = $("q-list"), form = $("ask-form"), text = $("q-text"), nameEl = $("q-name"), msg = $("form-msg"), btn = $("ask-btn");
   var questions = [], sort = "top", highlightId = null, toastTimer;
+  var seen = new Set(), firstRender = true, lastRendered = "";
 
   var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 
@@ -86,6 +63,10 @@
   }
 
   function render() {
+    // Skip redrawing when nothing visible has changed (prevents flicker on refresh).
+    var sig = sort + "|" + highlightId + "|" + JSON.stringify(questions) + "|" + Array.from(voted).join(",");
+    if (sig === lastRendered) return;
+    lastRendered = sig;
     var sorted = questions.slice().sort(function (a, b) {
       if (sort === "top" && b.votes !== a.votes) return b.votes - a.votes;
       return new Date(b.created_at) - new Date(a.created_at);
@@ -94,7 +75,8 @@
       var isVoted = voted.has(q.id);
       var who = q.name ? esc(q.name) : "Anonymous";
       var isNew = q.id === highlightId;
-      return '<li class="q-item' + (isNew ? " highlight" : "") + '" id="q-' + esc(q.id) + '">' +
+      var appear = !firstRender && !seen.has(q.id);
+      return '<li class="q-item' + (isNew ? " highlight" : "") + (appear || firstRender ? " appear" : "") + '" id="q-' + esc(q.id) + '">' +
         '<span class="num">' + String(i + 1).padStart(2, "0") + '</span>' +
         '<div class="q-body"><p class="q-text">' + esc(q.text) + '</p>' +
         '<div class="q-meta"><span class="who">' + who + '</span> · ' + ago(q.created_at) + (isNew ? '<span class="new-tag">Your question</span>' : "") + '</div></div>' +
@@ -102,6 +84,8 @@
         ' aria-label="' + (isVoted ? "You voted for this question" : "Vote for this question") + '">' + ARROW +
         '<span class="n">' + q.votes + '</span><small>' + (q.votes === 1 ? "vote" : "votes") + '</small></button></li>';
     }).join("");
+    questions.forEach(function (q) { seen.add(q.id); });
+    firstRender = false;
     $("empty").hidden = questions.length > 0;
     $("tab-count").textContent = questions.length;
     $("stat-questions").textContent = questions.length;
@@ -109,14 +93,13 @@
     $("stat-seekers").textContent = new Set(questions.filter(function (q) { return q.name; }).map(function (q) { return q.name.trim().toLowerCase(); })).size;
   }
 
+  var loadFailed = false;
   function load() {
-    return api.list().then(function (rows) { questions = rows; render(); })
-      .catch(function (err) {
-        if (api === serverApi && (err.status === 503 || err.status === 404 || !err.status)) {
-          LIVE = false; api = localApi(); $("demo-banner").hidden = false;
-          return load();
-        }
-        toast("Could not load questions. Please refresh in a moment.");
+    return api.list().then(function (rows) { questions = rows; loadFailed = false; render(); })
+      .catch(function () {
+        // Keep showing the current list; only tell the person once.
+        if (!loadFailed) toast("Having trouble reaching the server. Retrying…");
+        loadFailed = true;
       });
   }
 
@@ -237,5 +220,6 @@
   }
 
   load();
-  setInterval(function () { if (LIVE && !document.hidden) load(); }, REFRESH_MS);
+  setInterval(function () { if (!document.hidden) load(); }, REFRESH_MS);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) load(); });
 })();

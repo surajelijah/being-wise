@@ -38,7 +38,8 @@
 .sort button.active { color: var(--gold-bright); border-bottom-color: var(--gold-bright); }
 
 .q-list { list-style: none; padding: 0; margin: 0; }
-.q-item { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; align-items: start; padding: 20px 12px; margin: 0 -12px; border-bottom: 1px solid var(--line); border-radius: 8px; animation: rise .35s ease both; transition: background .6s ease, box-shadow .6s ease; }
+.q-item { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; align-items: start; padding: 20px 12px; margin: 0 -12px; border-bottom: 1px solid var(--line); border-radius: 8px; transition: background .6s ease, box-shadow .6s ease; }
+.q-item.appear { animation: rise .35s ease both; }
 .q-item .num { font-family: var(--display); color: var(--gold); font-size: 1.05rem; padding-top: 2px; }
 .q-text { margin: 0 0 6px; font-family: var(--serif); font-size: 1.15rem; color: var(--ink); line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
 .q-meta { font-size: 0.85rem; color: var(--muted); }
