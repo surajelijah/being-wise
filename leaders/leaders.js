@@ -18,10 +18,10 @@
     clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3500);
   }
 
-  function admin(body) {
+  function admin(body, asKey) {
     return fetch("/api/admin", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-admin-key": key || "" },
+      headers: { "Content-Type": "application/json", "x-admin-key": (asKey !== undefined ? asKey : key) || "" },
       body: JSON.stringify(body)
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (data) {
@@ -34,6 +34,7 @@
   function showMod(on) {
     $("login-panel").hidden = on;
     $("mod-panel").hidden = !on;
+    $("change-panel").hidden = true;
     if (on) load(); else $("passcode").focus();
   }
 
@@ -106,6 +107,32 @@
       b.disabled = false; b.classList.remove("confirm"); b.textContent = "Delete";
       toast(err.message);
     });
+  });
+
+  // ---- Change passcode ----
+  $("open-change").addEventListener("click", function () {
+    $("mod-panel").hidden = true; $("change-panel").hidden = false;
+    $("change-msg").textContent = ""; $("cur-pass").focus();
+  });
+  $("cancel-change").addEventListener("click", function () {
+    $("change-form").reset(); $("change-panel").hidden = true; $("mod-panel").hidden = false;
+  });
+  $("change-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var cur = $("cur-pass").value, next = $("new-pass").value, again = $("new-pass2").value, msg = $("change-msg");
+    if (next.length < 8) { msg.textContent = "New passcode must be at least 8 characters."; return; }
+    if (next !== again) { msg.textContent = "The new passcodes don't match."; return; }
+    if (next === cur) { msg.textContent = "The new passcode is the same as the current one."; return; }
+    $("change-btn").disabled = true; msg.textContent = "";
+    admin({ action: "change-passcode", newPasscode: next }, cur).then(function () {
+      key = next;
+      try { sessionStorage.setItem(KEY_STORE, key); } catch (err) {}
+      $("change-form").reset();
+      $("change-panel").hidden = true; $("mod-panel").hidden = false;
+      toast("Passcode changed. Share the new one with your leaders.");
+    }).catch(function (err) {
+      msg.textContent = err.status === 401 ? "Current passcode is incorrect." : err.message;
+    }).then(function () { $("change-btn").disabled = false; });
   });
 
   $("filter").addEventListener("input", render);

@@ -46,11 +46,36 @@
         <div class="mod-tools">
           <input id="filter" type="search" placeholder="Search questions or names">
           <button type="button" class="link-btn" id="refresh">Refresh</button>
+          <button type="button" class="link-btn" id="open-change">Change passcode</button>
           <button type="button" class="link-btn" id="logout">Sign out</button>
         </div>
       </div>
       <ol id="mod-list" class="q-list"></ol>
       <p id="mod-empty" class="empty" hidden>No questions to show.</p>
+    </section>
+
+    <section class="panel" id="change-panel" hidden>
+      <form id="change-form" class="ask-card" autocomplete="off">
+        <h2>Change passcode</h2>
+        <p class="hint">The new passcode works straight away for all leaders, and the old one stops working. Remember to share the new one with the other leaders.</p>
+        <div class="field">
+          <label class="label" for="cur-pass">Current passcode</label>
+          <input id="cur-pass" type="password" required autocomplete="current-password">
+        </div>
+        <div class="field">
+          <label class="label" for="new-pass">New passcode <span class="opt">(at least 8 characters)</span></label>
+          <input id="new-pass" type="password" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label class="label" for="new-pass2">Confirm new passcode</label>
+          <input id="new-pass2" type="password" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit" id="change-btn">SAVE NEW PASSCODE</button>
+          <button class="link-btn" type="button" id="cancel-change">Cancel</button>
+        </div>
+        <p class="form-msg" id="change-msg" role="status"></p>
+      </form>
     </section>
 
     <p class="toast" id="toast" role="status" hidden></p>
