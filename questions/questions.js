@@ -103,14 +103,14 @@
     });
     list.innerHTML = sorted.map(function (q, i) {
       var isVoted = voted.has(q.id);
-      var who = q.name ? esc(q.name) : "Anonymous seeker";
+      var who = q.name ? esc(q.name) : "Anonymous";
       return '<li class="q-item">' +
+        '<span class="num">' + String(i + 1).padStart(2, "0") + '</span>' +
+        '<div class="q-body"><p class="q-text">' + esc(q.text) + '</p>' +
+        '<div class="q-meta"><span class="who">' + who + '</span> · ' + ago(q.created_at) + '</div></div>' +
         '<button class="vote' + (isVoted ? " voted" : "") + '" data-id="' + esc(q.id) + '"' + (isVoted ? " disabled" : "") +
         ' aria-label="' + (isVoted ? "You voted for this question" : "Vote for this question") + '">' + ARROW +
-        '<span class="n">' + q.votes + '</span></button>' +
-        '<div class="q-body"><p class="q-text">' + esc(q.text) + '</p>' +
-        '<div class="q-meta">' + (sort === "top" ? '<span class="rank">#' + (i + 1) + '</span>' : "") +
-        '<span class="who">' + who + '</span> · ' + ago(q.created_at) + '</div></div></li>';
+        '<span class="n">' + q.votes + '</span><small>' + (q.votes === 1 ? "vote" : "votes") + '</small></button></li>';
     }).join("");
     $("empty").hidden = questions.length > 0;
     $("stat-questions").textContent = questions.length;
@@ -132,7 +132,7 @@
     btn.disabled = true; msg.textContent = "";
     api.add(t, n).then(function () {
       form.reset(); $("q-count").textContent = "0";
-      msg.textContent = "Thank you. Your question has been received 🙏";
+      msg.textContent = "Thank you — your question has been received.";
       sort = "new"; syncSort();
       return load();
     }).catch(function () {
