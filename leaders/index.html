@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Leaders · Being WISE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Gelasio:wght@400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../questions/questions.css">
+  <link rel="stylesheet" href="leaders.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../questions/"><span class="b">Being</span><span class="w">WISE</span></a>
+      <span class="header-meet">Leaders</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="page-head">
+      <h1>Moderate questions</h1>
+      <p class="lead">For Being WISE leaders. Remove questions that are spam, duplicates or not suitable for the group.</p>
+      <hr class="hr">
+    </section>
+
+    <section class="panel" id="login-panel">
+      <form id="login-form" class="ask-card" autocomplete="off">
+        <h2>Leader sign-in</h2>
+        <p class="hint">Enter the leaders' passcode.</p>
+        <div class="field">
+          <label class="label" for="passcode">Passcode</label>
+          <input id="passcode" type="password" required autocomplete="current-password">
+        </div>
+        <div class="actions"><button class="btn" type="submit" id="login-btn">SIGN IN</button></div>
+        <p class="form-msg" id="login-msg" role="status"></p>
+      </form>
+    </section>
+
+    <section class="panel" id="mod-panel" hidden>
+      <div class="toolbar">
+        <h2><span id="mod-count">0</span> questions</h2>
+        <div class="mod-tools">
+          <input id="filter" type="search" placeholder="Search questions or names">
+          <button type="button" class="link-btn" id="refresh">Refresh</button>
+          <button type="button" class="link-btn" id="logout">Sign out</button>
+        </div>
+      </div>
+      <ol id="mod-list" class="q-list"></ol>
+      <p id="mod-empty" class="empty" hidden>No questions to show.</p>
+    </section>
+
+    <p class="toast" id="toast" role="status" hidden></p>
+  </main>
+
+  <script src="leaders.js"></script>
+</body>
+</html>
