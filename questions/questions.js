@@ -196,18 +196,21 @@
 
   // ---- Celebration ------------------------------------------------------
   function celebrate(onClose) {
-    var c = $("celebrate"), sp = $("sparkles"), close = $("celebrate-close"), prev = document.activeElement;
+    var c = $("celebrate"), sp = c.querySelector(".motes"), close = $("celebrate-close"), prev = document.activeElement;
     sp.innerHTML = "";
-    for (var i = 0; i < 46; i++) {
+    for (var i = 0; i < 34; i++) {
       var d = document.createElement("span");
-      if (i % 3 === 0) d.className = "star";
-      d.style.left = (Math.random() * 100) + "%";
-      d.style.animationDuration = (4 + Math.random() * 5) + "s";
-      d.style.animationDelay = (-Math.random() * 8) + "s";
+      d.style.left = (61 + (Math.random() - 0.5) * 22) + "%";
+      d.style.bottom = "130px";
+      d.style.setProperty("--dx", ((Math.random() - 0.5) * 160) + "px");
+      d.style.animationDuration = (3 + Math.random() * 4) + "s";
+      d.style.animationDelay = (3 + Math.random() * 4) + "s";
       sp.appendChild(d);
     }
-    c.classList.remove("closing");
+    c.classList.remove("closing", "bible-on");
     c.hidden = false;
+    void c.offsetWidth; // restart the animation each time
+    c.classList.add("bible-on");
     document.body.style.overflow = "hidden";
     setTimeout(function () { close.focus(); }, 50);
 
@@ -216,7 +219,7 @@
       close.removeEventListener("click", done);
       c.classList.add("closing");
       setTimeout(function () {
-        c.hidden = true; sp.innerHTML = ""; document.body.style.overflow = "";
+        c.hidden = true; c.classList.remove("bible-on"); sp.innerHTML = ""; document.body.style.overflow = "";
         if (prev && prev.focus) prev.focus({ preventScroll: true });
         onClose && onClose();
       }, 380);
